@@ -4,12 +4,13 @@ import numpy as np
 from PIL import Image
 import pytesseract
 
-def analyze_image(image):
+def extract_text(image):
     # Use Tesseract to extract word boxes and text
     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    boxes_data = pytesseract.image_to_boxes(rgb_image)
     extracted_text = pytesseract.image_to_string(rgb_image)
+    return extracted_text
 
+def analyze_style(image):
     # Convert the image to grayscale for style analysis
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -38,7 +39,7 @@ def analyze_image(image):
         for letter_x in range(x, x + w):
             letter_styles.append(style)
 
-    return extracted_text, letter_styles
+    return letter_styles
 
 def main():
     st.title("Image Analysis App")
@@ -52,14 +53,14 @@ def main():
         if st.button("Analyze Image"):
             # Convert PIL Image to OpenCV format
             image_cv = np.array(image)
-            
-            # Analyze the image and get results
-            text_result, style_result = analyze_image(image_cv)
 
-            # Display results
+            # Output 1: Extracted Text
+            text_result = extract_text(image_cv)
             st.subheader("Output 1: Extracted Text")
             st.text(text_result)
 
+            # Output 2: Style Analysis
+            style_result = analyze_style(image_cv)
             st.subheader("Output 2: Style Analysis")
             for i, style in enumerate(style_result):
                 st.text(f"Letter {i+1}: Style - {style}")
