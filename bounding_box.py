@@ -2,21 +2,23 @@ import pytesseract
 import cv2
 
 image = cv2.imread("Test Images//3.png")
-img_RGB = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-#print(pytesseract.image_to_string(img_RGB))
+img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+hImg, wImg, c = img.shape
+boxes = pytesseract.image_to_data(img)
+bounding_boxes = []
+for x,b in enumerate(boxes.splitlines()):
+    if x!=0:
+        b = b.split()
+        if len(b) == 12 and b[-1] != "-1":
+            print(b)
+            x,y,w,h = int(b[6]),int(b[7]),int(b[8]),int(b[9])
+            cv2.rectangle(img,(x,y),(w+x,h+y),(0,0,255),2)
+            bounding_boxes.append([x,y,w,h])
 
-results = pytesseract.image_to_boxes(img_RGB)
-ih, iw, ic = image.shape
-for box in results.splitlines():
-    box = box.split(' ')
-    print(box)
-    x, y, w, h = int(box[1]), int(box[2]), int(box[3]), int(box[4])
-    cv2.rectangle(image, (x, ih-y), (w, ih-h), (0, 255, 0), 2)
-results = pytesseract.image_to_data(img_RGB)
-
-desired_width = 800
-desired_height = 600
-resized_image = cv2.resize(image, (desired_width, desired_height))
-cv2.imshow("Input", resized_image)
+cv2.imshow("Result",img)
 cv2.waitKey(0)
+
+
+
+
 
