@@ -12,37 +12,14 @@ def extract_text(image):
 
 def analyze_style(image):
     # Convert the image to grayscale for style analysis
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    # Apply edge detection
-    edges = cv2.Canny(gray_image, 50, 150)
-
-    # Find contours in the edge-detected image
-    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Analyze contours to infer style information for each letter
-    letter_styles = []
-
-    for contour in contours:
-        x, y, w, h = cv2.boundingRect(contour)
-
-        # Use bounding box information to infer style (e.g., bold or italic)
-        aspect_ratio = w / h
-        if aspect_ratio > 1.5:
-            style = "Bold"
-        elif aspect_ratio < 0.5:
-            style = "Italic"
-        else:
-            style = "Regular"
-
-        # Append style for each letter in the contour
-        for letter_x in range(x, x + w):
-            letter_styles.append(style)
+    
+    
 
     return letter_styles
 
 def main():
-    st.title("Image Analysis App")
+    
+    st.title("Image Miner")
 
     uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
 
@@ -50,7 +27,7 @@ def main():
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Image", use_column_width=True)
 
-        if st.button("Analyze Image"):
+        if st.button("Mine the Image"):
             # Convert PIL Image to OpenCV format
             image_cv = np.array(image)
 
@@ -61,7 +38,7 @@ def main():
 
             # Output 2: Style Analysis
             style_result = analyze_style(image_cv)
-            st.subheader("Output 2: Style Analysis")
+            st.subheader("Output 2: Text Characteristics")
             for i, style in enumerate(style_result):
                 st.text(f"Letter {i+1}: Style - {style}")
 
