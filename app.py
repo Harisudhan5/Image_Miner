@@ -28,6 +28,7 @@ def analyze_style(image):
     contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # Analyze contours to infer style information for each letter
+    # styles needed to be improved
     letter_styles = []
 
     for contour in contours:
